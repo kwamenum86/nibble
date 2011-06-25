@@ -14,7 +14,7 @@ class Nibble():
 
 	def write_items(self, items, item_fn = None, item_size = None):
 		buffer = 1
-		if self.fh is None:
+		if self.fh is None or self.fh.closed:
 			self.fh = open(self.filename, "wb")
 		for item in items:
 			data = item_fn and item_fn(item) or item
@@ -38,6 +38,10 @@ class Nibble():
 			buffer <<= 9 - num_digits(buffer, 2)
 			out = buffer & 255
 			self.fh.write("%c" % out)
+
+	def close(self):
+		if self.fh is None:
+			return
 		self.fh.close()
 
 def ones(num):
