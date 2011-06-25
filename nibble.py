@@ -1,8 +1,6 @@
 import math
 
-fh = open("rbytes.js", "wb")
-
-class ByteWriter():
+class Nibble():
 	@staticmethod
 	def iter_bytes(num):
 		while num:
@@ -20,7 +18,7 @@ class ByteWriter():
 			self.fh = open(self.filename, "wb")
 		for item in items:
 			data = item_fn and item_fn(item) or item
-			for byte in ByteWriter.iter_bytes(data):
+			for byte in Nibble.iter_bytes(data):
 				buffer <<= num_digits(byte, 2)
 				buffer |= byte
 				# Can't flush the buffer at 8 because of the dummy digit
@@ -57,6 +55,3 @@ def pad_pls(number, rightPadding = False):
 
 def num_digits(number, base):
 	return int(math.floor(math.log(number) / math.log(base)) + 1)
-
-w = ByteWriter('wbytes.bin')
-w.write_items([16])
