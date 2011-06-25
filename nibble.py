@@ -53,9 +53,5 @@ def ones(num):
 		num -= 1
 	return val
 
-def pad_pls(number, rightPadding = False):
-	str = bin(number)[2:]
-	return (rightPadding and str or "") + ("0" * (8 - len(str))) + (not rightPadding and str or "")
-
 def num_digits(number, base):
 	return int(math.floor(math.log(number) / math.log(base)) + 1)
