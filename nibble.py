@@ -12,14 +12,14 @@ class Nibble():
 		self.fh = None
 		self.filename = filename
 
-	def write_items(self, items, item_fn = None):
+	def write_items(self, items, item_fn = None, item_size = None):
 		buffer = 1
 		if self.fh is None:
 			self.fh = open(self.filename, "wb")
 		for item in items:
 			data = item_fn and item_fn(item) or item
 			for byte in Nibble.iter_bytes(data):
-				buffer <<= num_digits(byte, 2)
+				buffer <<= item_size or num_digits(byte, 2)
 				buffer |= byte
 				# Can't flush the buffer at 8 because of the dummy digit
 				digits = num_digits(buffer, 2)
