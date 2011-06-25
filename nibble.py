@@ -28,11 +28,14 @@ class Nibble():
 					# to account for the dummy digit
 					offset = digits - 9
 					out = (buffer & 255 << offset) >> offset
-					# Keep the remaining bits plus a dummy digit
+					# Keep the remaining bits plus a dummy digit.  The first code path below
+					# is functionally equivalent to the second when digits == 9.
 					if digits == 9:
 						buffer = 1
 					else:
-						buffer = buffer & ones(offset) | (1 << offset)
+						# (255 >> (8 - offset)) gives us the number represented by
+						# *offset* ones digits.  For example, when offset is 2 output is 3
+						buffer = buffer & (255 >> (8 - offset)) | (1 << offset)
 					self.fh.write("%c" % out)
 		if buffer > 1:
 			buffer <<= 9 - num_digits(buffer, 2)
@@ -43,15 +46,6 @@ class Nibble():
 		if self.fh is None:
 			return
 		self.fh.close()
-
-def ones(num):
-	val = 1
-	num -= 1
-	while num:
-		val <<= 1
-		val += 1
-		num -= 1
-	return val
 
 def num_digits(number, base):
 	return int(math.floor(math.log(number) / math.log(base)) + 1)
