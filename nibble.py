@@ -11,12 +11,19 @@ class FileClient():
 			return
 		self.fh.close()
 
+	@staticmethod
+	def file_func(fn):
+		def _fn(self, *args, **kwargs):
+			if self.fh is None or self.fh.closed:
+				self.fh = open(self.filename, "wb")
+			fn(self, *args, **kwargs)
+		return _fn
+
 class Writer(FileClient):
+	@FileClient.file_func
 	def write(self, data, item_size = None):
 		buffer = 1
 		buffer_size = 0
-		if self.fh is None or self.fh.closed:
-			self.fh = open(self.filename, "wb")
 		for byte in iter_bytes(data):
 			# TODO figure out how to get rid of num_digits here
 			shift_count = item_size or num_digits(byte, 2)
@@ -48,7 +55,9 @@ class Writer(FileClient):
 			self.fh.write("%c" % out)
 
 class Reader(FileClient):
-	pass
+	@FileClient.file_func
+	def read(offset = 0, size = 8):
+		pass
 
 # Iterate through a list of numbers and return each of those
 # 8 bits at a time
