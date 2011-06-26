@@ -1,12 +1,6 @@
 import math
 
-class Nibble():
-	@staticmethod
-	def iter_bytes(num):
-		while num:
-			yield num & 255
-			num >>= 8
-
+class Writer():
 	def __init__(self, filename):
 		# item length in bits
 		self.fh = None
@@ -19,7 +13,7 @@ class Nibble():
 			self.fh = open(self.filename, "wb")
 		for item in items:
 			data = item_fn and item_fn(item) or item
-			for byte in Nibble.iter_bytes(data):
+			for byte in iter_bytes(data):
 				# TODO figure out how to get rid of num_digits here
 				shift_count = item_size or num_digits(byte, 2)
 				buffer <<= shift_count
@@ -54,9 +48,13 @@ class Nibble():
 			return
 		self.fh.close()
 
+# Return a number 8 bits at a time
+def iter_bytes(num):
+	while num:
+		yield num & 255
+		num >>= 8
+
 # Find the number of digits in number n from base b.
-# I'm not doing any error handling because I'm the
-# only one using this function - input should be clean.
 # I could do this with log but it's slower.
 def num_digits(n, b):
 	step = b

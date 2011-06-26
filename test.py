@@ -1,5 +1,5 @@
 import os
-from nibble import Nibble
+from nibble import Writer
 
 filepath = "wbytes.bin"
 
@@ -15,7 +15,7 @@ def test_func(fn):
 @test_func
 def test_1():
 	"""Really weak test"""
-	n = Nibble(filepath)
+	n = Writer(filepath)
 	data_good = True
 	n.write_items([9, 9, 9, 9], item_size=4)
 	n.close()
