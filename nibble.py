@@ -1,11 +1,17 @@
 import math
 
-class Writer():
+class FileClient():
 	def __init__(self, filename):
 		# item length in bits
 		self.fh = None
 		self.filename = filename
 
+	def close(self):
+		if self.fh is None:
+			return
+		self.fh.close()
+
+class Writer(FileClient):
 	def write_items(self, items, item_fn = None, item_size = None):
 		buffer = 1
 		buffer_size = 0
@@ -43,10 +49,8 @@ class Writer():
 			out = buffer & 255
 			self.fh.write("%c" % out)
 
-	def close(self):
-		if self.fh is None:
-			return
-		self.fh.close()
+class Reader(FileClient):
+	pass
 
 # Return a number 8 bits at a time
 def iter_bytes(num):
