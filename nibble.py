@@ -54,5 +54,15 @@ class Nibble():
 			return
 		self.fh.close()
 
-def num_digits(number, base):
-	return int(math.floor(math.log(number) / math.log(base)) + 1)
+# Find the number of digits in number n from base b.
+# I'm not doing any error handling because I'm the
+# only one using this function - input should be clean.
+# I could do this with log but it's slower.
+def num_digits(n, b):
+	step = b
+	digits = 1
+	while True:
+		if step > n:
+			return digits
+		step *= b
+		digits += 1
