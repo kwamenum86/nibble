@@ -3,6 +3,16 @@ from nibble import Nibble
 
 filepath = "wbytes.bin"
 
+test_suite = []
+
+def test_func(fn):
+	def _fn():
+		print "Performing test '%s':" % fn.__doc__
+		print fn() + "\n"
+	test_suite.append(_fn)
+	return _fn
+
+@test_func
 def test_1():
 	"""Really weak test"""
 	n = Nibble(filepath)
@@ -22,5 +32,5 @@ def test_1():
 		return "Data corrupted"
 
 if __name__ == "__main__":
-	print "Performing test '%s':" % test_1.__doc__
-	print test_1() + "\n"
+	for test in test_suite:
+		test()
