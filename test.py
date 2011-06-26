@@ -17,7 +17,7 @@ def test_1():
 	"""Really weak test"""
 	n = Writer(filepath)
 	data_good = True
-	n.write_items([9, 9, 9, 9], item_size=4)
+	n.write([9, 9, 9, 9], item_size=4)
 	n.close()
 	fh = open(filepath, "rb")
 	for byte in fh.read():
