@@ -12,14 +12,13 @@ class FileClient():
 		self.fh.close()
 
 class Writer(FileClient):
-	def write_items(self, items, item_fn = None, item_size = None):
+	def write(self, data, item_size = None):
 		buffer = 1
 		buffer_size = 0
 		if self.fh is None or self.fh.closed:
 			self.fh = open(self.filename, "wb")
-		for item in items:
-			data = item_fn and item_fn(item) or item
-			for byte in iter_bytes(data):
+		for datum in data:
+			for byte in iter_bytes(datum):
 				# TODO figure out how to get rid of num_digits here
 				shift_count = item_size or num_digits(byte, 2)
 				buffer <<= shift_count
