@@ -12,7 +12,7 @@ class FileClient():
 		self.fh.close()
 
 	@staticmethod
-	def insert_bits(byte, buffer, buffer_size, item_size):
+	def buffer_bits(byte, buffer, buffer_size, item_size):
 		buffer <<= item_size
 		buffer_size += item_size
 		buffer |= byte
@@ -57,7 +57,7 @@ class Writer(FileClient):
 		buffer_size = 0
 		for byte in iter_bytes(data):
 			# TODO figure out how to get rid of num_digits here
-			buffer, buffer_size = FileClient.insert_bits(byte, buffer, buffer_size, item_size or num_digits(byte, 2))
+			buffer, buffer_size = FileClient.buffer_bits(byte, buffer, buffer_size, item_size or num_digits(byte, 2))
 			buffer, buffer_size, out = FileClient.slice_buffer(buffer, buffer_size)
 			if not out is None:
 				self.fh.write("%c" % out)
