@@ -7,7 +7,7 @@ test_suite = []
 
 def test_func(fn):
 	def _fn():
-		print "Performing '%s' test:" % fn.__doc__
+		print "%s:" % fn.__doc__
 		res = fn()
 		print (res and "Success" or "Failed") + "\n"
 	test_suite.append(_fn)
@@ -15,7 +15,7 @@ def test_func(fn):
 
 @test_func
 def test():
-	"""Really weak"""
+	"""Basic test to ensure that writing 4 bits at a time works as expected"""
 	n = Writer(filepath)
 	data_good = True
 	n.write([9, 9, 9, 9], item_size=4)
@@ -31,7 +31,7 @@ def test():
 
 @test_func
 def test():
-	"""file_func"""
+	"""Ensure that calling Writer.close and attempting to write more data works correctly"""
 	n = Writer(filepath)
 	byte_count = 0
 	n.write([9, 9], item_size=4)
