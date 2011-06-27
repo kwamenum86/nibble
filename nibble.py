@@ -15,7 +15,7 @@ class FileClient():
 	def file_func(fn):
 		def _fn(self, *args, **kwargs):
 			if self.fh is None or self.fh.closed:
-				self.fh = open(self.filename, "wb")
+				self.fh = open(self.filename, "ab")
 			fn(self, *args, **kwargs)
 		return _fn
 
