@@ -13,14 +13,10 @@ class FileClient():
 
 	@staticmethod
 	def buffer_bits(byte, buffer, buffer_size, item_size):
+		out = None
 		buffer <<= item_size
 		buffer_size += item_size
 		buffer |= byte
-		return buffer, buffer_size
-
-	@staticmethod
-	def slice_buffer(buffer, buffer_size):
-		out = None
 		# Can't flush the buffer at 8 because of the dummy digit
 		if  buffer_size > 7:
 			# extract digits 2 through 9 i.e. a byte's worth of bits offset by 1
@@ -57,8 +53,7 @@ class Writer(FileClient):
 		buffer_size = 0
 		for byte in iter_bytes(data):
 			# TODO figure out how to get rid of num_digits here
-			buffer, buffer_size = FileClient.buffer_bits(byte, buffer, buffer_size, item_size or num_digits(byte, 2))
-			buffer, buffer_size, out = FileClient.slice_buffer(buffer, buffer_size)
+			buffer, buffer_size, out = FileClient.buffer_bits(byte, buffer, buffer_size, item_size or num_digits(byte, 2))
 			if not out is None:
 				self.fh.write("%c" % out)
 		if buffer > 1:
