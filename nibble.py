@@ -20,8 +20,9 @@ class FileClient():
 		return _fn
 
 class Writer(FileClient):
+	# Data is not guaranteed to be in the file after calling put
 	@FileClient.file_func
-	def write(self, data, item_size = None):
+	def put(self, data, item_size = None):
 		buffer = 1
 		buffer_size = 0
 		for byte in iter_bytes(data):
@@ -55,8 +56,12 @@ class Writer(FileClient):
 			self.fh.write("%c" % out)
 
 class Reader(FileClient):
+	# offset is a tuple containing a byte offset and a bit offset
+	# byte is a byte offset in the file
+	# bit is an in offset in the file
+	# both byte and bit are used to determine where to start reading
 	@FileClient.file_func
-	def read(offset = 0, size = 8):
+	def get(byte = 0, bit = 0, size = 8):
 		pass
 
 # Iterate through a list of numbers and return each of those
