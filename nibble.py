@@ -33,7 +33,8 @@ class FileClient():
 				# *offset* ones digits.  For example, when offset is 2 output is 3.
 				# The statement below is meant to reduce the buffer to bits that
 				# have not been written yet.
-				buffer &= (255 >> (8 - offset)) | (1 << offset)
+				buffer &= (255 >> (8 - offset))
+				buffer |= (1 << offset)
 				buffer_size = offset
 		return buffer, buffer_size, out
 
