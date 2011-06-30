@@ -1,4 +1,8 @@
+#!/usr/bin/python -u
+
 import os
+import sys
+sys.path.insert(0,  os.path.normpath(os.path.join(__file__, '../..')));
 from nibble import Writer
 
 filepath = "wbytes.bin"
