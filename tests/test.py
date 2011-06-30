@@ -22,7 +22,7 @@ def test():
 	"""Basic test to ensure that writing 4 bits at a time works as expected"""
 	n = Writer(filepath)
 	data_good = True
-	n.put([9, 9, 9, 9], item_size=4)
+	n.put([9, 9, 9, 9], item_size=5)
 	n.close()
 	fh = open(filepath, "rb")
 	for byte in fh.read():
@@ -38,9 +38,9 @@ def test():
 	"""Ensure that calling Writer.close and attempting to write more data works correctly"""
 	n = Writer(filepath)
 	byte_count = 0
-	n.put([9, 9], item_size=4)
+	n.put([9, 9], item_size=5)
 	n.close()
-	n.put([9, 9], item_size=4)
+	n.put([9, 9], item_size=5)
 	n.close()
 	fh = open(filepath, "rb")
 	for byte in fh.read():
