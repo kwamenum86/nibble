@@ -53,6 +53,23 @@ def test():
 	os.remove(filepath)
 	return byte_count == 3
 
+@test_func
+def test():
+	"""Basic test for the Reader class"""
+	fh = open(filepath, "wb")
+	# 73 is 1001001 in binary
+	fh.write("%c" % 73)
+	fh.close()
+	n = Reader(filepath)
+	chunk = n.get(0, 0, 8)
+	print chunk
+
 if __name__ == "__main__":
 	for test in test_suite:
-		test()
+		try:
+			test()
+		except Exception:
+			print "Exception thrown"
+		finally:
+			if os.path.exists(filepath):
+				os.remove(filepath)
