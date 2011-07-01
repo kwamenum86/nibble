@@ -38,19 +38,19 @@ def test():
 
 @test_func
 def test():
-	"""Ensure that calling Writer.close and attempting to write more data works correctly"""
+	"""Ensure that calling the buffer is not "flushed" between put calls"""
 	n = Writer(filepath)
 	byte_count = 0
 	n.put([9, 9], item_size=5)
-	n.close()
 	n.put([9, 9], item_size=5)
+	n._flush_buffer()
 	n.close()
 	fh = open(filepath, "rb")
 	for byte in fh.read():
 		byte_count += 1
 	fh.close()
 	os.remove(filepath)
-	return byte_count == 2
+	return byte_count == 3
 
 if __name__ == "__main__":
 	for test in test_suite:
