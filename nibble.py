@@ -5,6 +5,8 @@ class FileClient():
 		# item length in bits
 		self.fh = None
 		self.filename = filename
+		self.buffer = None
+		self.buffer_size = 0
 
 	def close(self):
 		if self.fh is None:
@@ -50,17 +52,20 @@ class Writer(FileClient):
 	# Data is not guaranteed to be in the file after calling put
 	@FileClient.file_func
 	def put(self, data, item_size = None):
-		buffer = 1
-		buffer_size = 0
+		self.buffer = 1
 		for byte in iter_bytes(data):
 			# TODO figure out how to get rid of num_digits here
-			buffer, buffer_size, out = FileClient.buffer_bits(byte, buffer, buffer_size, item_size or num_digits(byte, 2))
+			self.buffer, self.buffer_size, out = FileClient.buffer_bits(byte, self.buffer, self.buffer_size, item_size or num_digits(byte, 2))
 			if not out is None:
 				self.fh.write("%c" % out)
-		if buffer > 1:
-			buffer <<= 8 - buffer_size
-			out = buffer & 255
+				print out
+
+	def _flush_buffer(self):
+		if self.buffer > 1:
+			self.buffer <<= 8 - self.buffer_size
+			out = self.buffer & 255
 			self.fh.write("%c" % out)
+			print out
 
 class Reader(FileClient):
 	# offset is a tuple containing a byte offset and a bit offset
