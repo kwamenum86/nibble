@@ -19,16 +19,19 @@ def test_func(fn):
 
 @test_func
 def test():
-	"""Basic test to ensure that writing 4 bits at a time works as expected"""
+	"""Basic test to ensure that writing 5 bits at a time works as expected"""
 	n = Writer(filepath)
 	data_good = True
+	test_bytes = [74, 82, 144]
+	byte_index = 0
 	n.put([9, 9, 9, 9], item_size=5)
 	n.close()
 	fh = open(filepath, "rb")
 	for byte in fh.read():
-		data_good &= ord(byte) == 153
+		data_good &= ord(byte) == test_bytes[byte_index]
 		if not data_good:
 			break
+		byte_index += 1
 	fh.close()
 	os.remove(filepath)
 	return data_good
