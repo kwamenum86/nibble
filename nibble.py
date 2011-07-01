@@ -58,7 +58,7 @@ class Writer(FileClient):
 			if not out is None:
 				self.fh.write("%c" % out)
 		if buffer > 1:
-			buffer <<= 9 - buffer_size
+			buffer <<= 8 - buffer_size
 			out = buffer & 255
 			self.fh.write("%c" % out)
 
