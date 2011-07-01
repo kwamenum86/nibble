@@ -41,16 +41,18 @@ class FileClient():
 		return buffer, buffer_size, out
 
 	@staticmethod
-	def file_func(fn):
-		def _fn(self, *args, **kwargs):
-			if self.fh is None or self.fh.closed:
-				self.fh = open(self.filename, "ab")
-			fn(self, *args, **kwargs)
-		return _fn
+	def file_func(mode):
+		def _dec(fn):
+			def _fn(self, *args, **kwargs):
+				if self.fh is None or self.fh.closed:
+					self.fh = open(self.filename, mode)
+				fn(self, *args, **kwargs)
+			return _fn
+		return _dec
 
 class Writer(FileClient):
 	# Data is not guaranteed to be in the file after calling put
-	@FileClient.file_func
+	@FileClient.file_func("ab")
 	def put(self, data, item_size = None):
 		self.buffer = 1
 		for byte in iter_bytes(data):
