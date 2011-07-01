@@ -25,6 +25,7 @@ def test():
 	test_bytes = [74, 82, 144]
 	byte_index = 0
 	n.put([9, 9, 9, 9], item_size=5)
+	n._flush_buffer()
 	n.close()
 	fh = open(filepath, "rb")
 	for byte in fh.read():
@@ -41,8 +42,8 @@ def test():
 	"""Ensure that calling the buffer is not "flushed" between put calls"""
 	n = Writer(filepath)
 	byte_count = 0
-	n.put([9, 9], item_size=5)
-	n.put([9, 9], item_size=5)
+	n.put([10, 10], item_size=5)
+	n.put([10, 10], item_size=5)
 	n._flush_buffer()
 	n.close()
 	fh = open(filepath, "rb")
