@@ -56,7 +56,7 @@ def test():
 
 @test_func
 def test():
-	"""Basic test for the Reader class"""
+	"""Read the first byte"""
 	fh = open(filepath, "wb")
 	# 73 is 1001001 in binary
 	fh.write("%c" % 73)
