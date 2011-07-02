@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.insert(0,  os.path.normpath(os.path.join(__file__, '../..')));
 from nibble import Writer
+from nibble import Reader
 
 filepath = "wbytes.bin"
 
@@ -24,7 +25,7 @@ def test():
 	data_good = True
 	test_bytes = [74, 82, 144]
 	byte_index = 0
-	n.put([9, 9, 9, 9], item_size=5)
+	n.put_data([9, 9, 9, 9], item_size=5)
 	n._flush_buffer()
 	n.close()
 	fh = open(filepath, "rb")
@@ -42,8 +43,8 @@ def test():
 	"""Ensure that calling the buffer is not "flushed" between put calls"""
 	n = Writer(filepath)
 	byte_count = 0
-	n.put([10, 10], item_size=5)
-	n.put([10, 10], item_size=5)
+	n.put_data([10, 10], item_size=5)
+	n.put_data([10, 10], item_size=5)
 	n._flush_buffer()
 	n.close()
 	fh = open(filepath, "rb")
@@ -61,11 +62,13 @@ def test():
 	fh.write("%c" % 73)
 	fh.close()
 	n = Reader(filepath)
-	chunk = n.get(0, 0, 8)
+	chunk = n.get_data(0, 0, 8)
 	print chunk
 
 if __name__ == "__main__":
 	for test in test_suite:
+		test()
+		continue
 		try:
 			test()
 		except Exception:
