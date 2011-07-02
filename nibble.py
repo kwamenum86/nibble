@@ -46,40 +46,74 @@ class FileClient():
 			def _fn(self, *args, **kwargs):
 				if self.fh is None or self.fh.closed:
 					self.fh = open(self.filename, mode)
-				fn(self, *args, **kwargs)
+				return fn(self, *args, **kwargs)
 			return _fn
 		return _dec
 
 class Writer(FileClient):
 	# Data is not guaranteed to be in the file after calling put
 	@FileClient.file_func("ab")
-	def put(self, data, item_size = None):
+	def put_data(self, data, item_size = None):
 		self.buffer = 1
 		for byte in iter_bytes(data):
 			# TODO figure out how to get rid of num_digits here
 			self.buffer, self.buffer_size, out = FileClient.buffer_bits(byte, self.buffer, self.buffer_size, item_size or num_digits(byte, 2))
 			if not out is None:
 				self.fh.write("%c" % out)
-				print out
 
 	def _flush_buffer(self):
 		if self.buffer > 1:
 			self.buffer <<= 8 - self.buffer_size
 			out = self.buffer & 255
 			self.fh.write("%c" % out)
-			print out
 
 class Reader(FileClient):
 	# offset is a tuple containing a byte offset and a bit offset
 	# byte is a byte offset in the file
 	# bit is an in offset in the file
 	# both byte and bit are used to determine where to start reading
-	@FileClient.file_func
-	def get(byte = 0, bit = 0, size = 8):
-		pass
+	@FileClient.file_func("rb")
+	def get_data(self, byte = 0, bit = 0, size = 8):
+		data = []
+		buffer = 1
+		buffer_size = 0
+		# Normalize. bit should be less than 8
+		byte += bit / 8
+		bit = bit % 8
+		self.fh.seek(byte)
+		extra_bits = size - bit
+		right_extra_bits = (size - bit) % 8
+		# How many bytes to we need to pull to fulfill the request for `size` bits
+		if size <= 8 - bit:
+			bytes_to_read = 1
+		else:
+			bytes_to_read = extra_bits / 8 + 1
+			if right_extra_bits:
+				bytes_to_read += 1
+		raw_bytes = self.fh.read(bytes_to_read)
+		extracted = (255 >> bit) & ord(raw_bytes[0])
+		buffer, buffer_size, out = FileClient.buffer_bits(extracted, buffer, buffer_size, 8 - bit)
+		if not out is None:
+			data.append(out)
+		for byte in raw_bytes[1:-1]:
+			buffer, buffer_size, out = FileClient.buffer_bits(ord(byte), buffer, buffer_size, 8)
+			if not out is None:
+				data.append(out)
+		if len(raw_bytes) > 1:
+			# Extract the first right_extra_bits from the last byte in raw_bytes.  Pad left with 0s
+			extraction_mask = 255 & (1 << right_extra_bits + 1)
+			extracted = extraction_mask & ord(raw_bytes[len(raw_bytes) - 1])
+			buffer, buffer_size, out = FileClient.buffer_bits(extracted, buffer, buffer_size, 8)
+			if not out is None:
+				data.append(out)
+		if buffer > 1:
+			buffer <<= 8 - buffer_size
+			out = buffer & 255
+			data.append(out)
+		return data
 
 # Iterate through a list of numbers and return each of those
-# 8 bits at a time
+# 8 bits or less at a time
 def iter_bytes(nums):
 	for num in nums:
 		while num:
