@@ -67,8 +67,6 @@ def test():
 
 if __name__ == "__main__":
 	for test in test_suite:
-		test()
-		continue
 		try:
 			test()
 		except Exception:
