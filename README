@@ -1,1 +1,5 @@
 Nibble is a binary serialization libraru written in Python.  Binary serialization allows more compact representations of data.  Nibble allows you to push arbitrary groups of bits into a file, which means you can write arbitrary groupings of bits rather than bytes to a file.
+
+Release notes
+-------
+0.1 Basic implementation of bitwise reading and writing.  Unstable.
