@@ -63,7 +63,7 @@ def test():
 	fh.close()
 	n = Reader(filepath)
 	chunk = n.get_data(0, 0, 8)
-	print chunk
+	return chunk[0] == 73
 
 if __name__ == "__main__":
 	for test in test_suite:
